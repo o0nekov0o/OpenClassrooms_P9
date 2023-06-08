@@ -1,6 +1,7 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.conf import settings
 from django.db import models
+from django.contrib import admin
 
 
 class Ticket(models.Model):
@@ -31,5 +32,9 @@ class UserFollows(models.Model):
     class Meta:
         # ensures we don't get multiple UserFollows instances
         # for unique user-user_followed pairs
-        unique_together = ('user', 'followed_user', )
+        unique_together = ('user', 'followed_user',)
+        verbose_name = ("UserFollow")
+        verbose_name_plural = ("UserFollows")
 
+        def __str__(self):
+            return self.name
