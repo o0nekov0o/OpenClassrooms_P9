@@ -1,13 +1,13 @@
 from django.shortcuts import render
+from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 
 
+@login_required(login_url='user-login')
 def index(request, *args, **kwargs):
-    name = "donald"
-    number = 55
-    mylist = [3, 35, 6, 7, 9]
-    context = {
-        "nom": name,
-        "numero": number,
-        "maliste": mylist
-    }
-    return render(request, "index.html", context)
+    users = get_user_model().objects.all()
+    return render(request, "index.html", {'users': users})
+
+
+def register(request, *args, **kwargs):
+    return render(request, "user/register.html")
