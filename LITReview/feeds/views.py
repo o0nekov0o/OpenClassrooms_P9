@@ -1,6 +1,13 @@
 from django.shortcuts import render
-from django.http import HttpResponse
 
 
-def home(request, *args, **kwargs):
-    return HttpResponse("<h1>Hey</h1>")
+def index(request, *args, **kwargs):
+    name = "donald"
+    number = 55
+    mylist = [3, 35, 6, 7, 9]
+    context = {
+        "nom": name,
+        "numero": number,
+        "maliste": mylist
+    }
+    return render(request, "index.html", context)
