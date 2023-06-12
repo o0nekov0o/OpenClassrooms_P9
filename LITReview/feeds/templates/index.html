@@ -1,10 +1,46 @@
-<!DOCTYPE html>
+{% extends 'partials/base.html' %}
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>{% block title %}LITReview Home{% endblock %}</title>
 </head>
 <body>
-    <p>{{ users }}</p>
+{% block content %}
+    <h1>Tickets List</h1>
+    {% for item in tickets %}
+        <div><h6><b style="background:lightblue">{{ item.title }} </b>
+        <i style="background:pink">from {{ item.user }} </i>
+        <i style="background:lightgreen">at {{ item.time_created }} </i>
+        {{ item.description }}</h6>
+        {% for element in reviews %}
+            {% if element.ticket == item %}
+            {% if forloop.counter == 1 %}
+                <div onclick="pchild=this.getElementsByTagName('div');
+                if(pchild[0].style.visibility!='hidden'){pchild[0].style.visibility='hidden';
+                pchild[0].style.height='0';}else{pchild[0].style.visibility=''; pchild[0].style.height=''}">
+                <b>Click here to add reviews in addition to those already here.</b>
+                <div style="visibility:hidden;height:0"><br>{% include 'partials/form.html' %}</div></div>
+                <hr>
+                <div onclick="pchild=this.getElementsByTagName('div');
+                if(pchild[0].style.visibility!='hidden'){pchild[0].style.visibility='hidden';
+                pchild[0].style.height='0';}else{pchild[0].style.visibility=''; pchild[0].style.height=''}">
+                <b>Reviews have been added to this ticket. Click here to see them.</b>
+                <div style="visibility:hidden;height:0"><br>{{ element.body }}<hr>
+            {% elif forloop.counter > 1 %}
+                {{ element.body }}</div></div>
+            {% endif %}
+            {% else %}
+            {% if forloop.counter == 1 %}
+                <div onclick="pchild=this.getElementsByTagName('div');
+                if(pchild[0].style.visibility!='hidden'){pchild[0].style.visibility='hidden';
+                pchild[0].style.height='0';}else{pchild[0].style.visibility=''; pchild[0].style.height=''}">
+                <b>No reviews were added to this ticket yet. Click here to add ones.</b>
+                <div style="visibility:hidden;height:0"><br>{% include 'partials/form.html' %}</div></div>
+            {% endif %}
+            {% endif %}
+        {% endfor %}
+        <hr></div>
+    {% endfor %}
+{% endblock %}
 </body>
 </html>
