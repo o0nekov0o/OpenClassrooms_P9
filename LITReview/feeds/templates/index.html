@@ -15,10 +15,10 @@
         {% for element in reviews %}
             {% if element.ticket == item or element.ticket != item %}
                 {% if forloop.counter == reviews|length %}
-                    <div onclick="pchild=this.getElementsByTagName('div');
+                    <div style="background:#F5F5DC" onclick="pchild=this.getElementsByTagName('div');
                     if(pchild[0].style.visibility!='hidden'){pchild[0].style.visibility='hidden';
                     pchild[0].style.height='0';}else{pchild[0].style.visibility=''; pchild[0].style.height=''}">
-                    <b>Click here to add reviews no matter if there already are or not.</b><hr>
+                    <b>Click here to add reviews to this ticket no matter if there already are or not.</b><hr>
                     <div style="visibility:hidden;height:0">
                     {% include 'partials/review.html' with ticket_id=item.id %}<hr></div></div>
                 {% endif %}
@@ -26,10 +26,11 @@
         {% endfor %}
         {% for element in reviews %}
             {% if element.ticket == item %}
-                <div style="background:lightblue" onclick="pchild=this.getElementsByTagName('div');
+                <div style="background:#DCDCDC" onclick="pchild=this.getElementsByTagName('div');
                 if(pchild[0].style.visibility!='hidden'){pchild[0].style.visibility='hidden';
                 pchild[0].style.height='0';}else{pchild[0].style.visibility=''; pchild[0].style.height=''}">
-                <b>Click here to see the number {{forloop.counter}} review corresponding to this ticket.</b>
+                <b>Click here to see this ticket review <i style="background:pink">from {{element.user}} </i>
+                <i style="background:lightgreen">at {{element.time_created}} </i></b>
                 <div style="visibility:hidden;height:0"><br>{{ element.body }}<hr></div></div>
             {% endif %}
         {% endfor %}
