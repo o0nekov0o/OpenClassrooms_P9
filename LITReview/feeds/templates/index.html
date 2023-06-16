@@ -11,7 +11,7 @@
         <div><h6><b style="background:lightblue">{{ item.title }} </b>
         <i style="background:pink">from {{ item.user }} </i>
         <i style="background:lightgreen">at {{ item.time_created }} </i>
-        <i style="background:yellow">{{ item.description }} </i></h6>
+        <i style="background:#FED8B1">{{ item.description }} </i></h6>
         {% for element in reviews %}
             {% if element.ticket == item or element.ticket != item %}
                 {% if forloop.counter == reviews|length %}
