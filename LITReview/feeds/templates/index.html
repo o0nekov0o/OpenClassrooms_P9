@@ -6,25 +6,28 @@
 </head>
 <body>
 {% block content %}
-    <h1>Tickets List</h1>
+    <div style="background:#F5F5DC" onclick="pchild=this.getElementsByTagName('div');
+    if(pchild[0].style.visibility!='hidden'){pchild[0].style.visibility='hidden';
+    pchild[0].style.height='0';}else{pchild[0].style.visibility=''; pchild[0].style.height=''}">
+    <h4>Welcome {{user}}, here is the tickets list. <br>Click here to add new tickets to this list. </h4>
+    <div style="visibility:hidden;height:0">
+    {% include 'ticket.html' %}</div></div><hr>
     {% for item in tickets %}
-        <div><h6><b style="background:lightblue">{{ item.title }}
+        <div><b style="background:lightblue">{{ item.title }}
         <i style="background:pink">from {{ item.user }} </i>
         <i style="background:lightgreen">at {{ item.time_created }} </i>
-        <b style="background:#FED8B1">: {{ item.description }} </b></b></h6>
+        <i style="background:#FED8B1">: {{ item.description }} </i></b>
         {% for element in reviews %}
-            {% if element.ticket == item or element.ticket != item %}
-                {% if forloop.counter == reviews|length %}
-                    <div style="background:#F5F5DC" onclick="pchild=this.getElementsByTagName('div');
-                    if(pchild[0].style.visibility!='hidden'){pchild[0].style.visibility='hidden';
-                    pchild[0].style.height='0';}else{pchild[0].style.visibility=''; pchild[0].style.height=''}">
-                    <b>Click here to add reviews to this ticket no matter if there already are or not.</b><hr>
-                    <div style="visibility:hidden;height:0">
-                    {% include 'partials/review.html' with ticket_id=item.id %}<hr></div></div>
-                {% endif %}
+            {% if forloop.counter == reviews|length %}
+                <div style="background:#F5F5DC" onclick="pchild=this.getElementsByTagName('div');
+                if(pchild[0].style.visibility!='hidden'){pchild[0].style.visibility='hidden';
+                pchild[0].style.height='0';}else{pchild[0].style.visibility=''; pchild[0].style.height=''}">
+                <b>Click here to add reviews to this ticket no matter if there already are or not. </b>
+                <div style="visibility:hidden;height:0">
+                {% include 'review.html' with ticket_id=item.id %} </div></div>
             {% endif %}
         {% endfor %}
-        {% for element in reviews %}
+        {% for review in reviews %}
             {% if element.ticket == item %}
                 <div style="background:#DCDCDC" onclick="pchild=this.getElementsByTagName('div');
                 if(pchild[0].style.visibility!='hidden'){pchild[0].style.visibility='hidden';
@@ -32,7 +35,7 @@
                 <b>Click here to see this ticket review <i style="background:pink">from {{element.user}} </i>
                 <i style="background:lightgreen">at {{element.time_created}} </i>
                 <i style="color:white;background:red">(Rating {{element.rating}}) </i></b>
-                <div style="visibility:hidden;height:0"><br>{{ element.body }} <hr></div></div>
+                <div style="visibility:hidden;height:0">{{ element.body }} </div></div>
             {% endif %}
         {% endfor %}
         <hr></div>
