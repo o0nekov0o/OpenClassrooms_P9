@@ -1,0 +1,62 @@
+{% extends 'partials/base.html' %}
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}LITReview Home{% endblock %}</title>
+</head>
+<body>
+{% block content %}
+<style>
+    .follows_datas {
+      background: lightblue;}
+</style>
+    <div class="spoiler">
+    <h4>Welcome {{user}}, here is your follows. <br>Click here to add users to your follows. </h4>
+    <div style="visibility:hidden;height:0">
+    {% include 'follow_form.html' %}</div></div><hr>
+    <b>People that I follow : </b>
+    <ul class="follows_datas">
+        {% if followings_count == 0 %}
+            <li>There isn't any user that you follow yet. </li>
+        {% endif %}
+        {% for follow in user_follows %}
+            {% if follow.user == user %}
+                <li><i>{{follow.followed_user}}</i></li>
+            {% endif %}
+        {% endfor %}
+        {% if not user_follows %}
+            <li>There isn't any user that you follow yet. </li>
+        {% endif %}
+    </ul>
+    <b>People that follow me : </b>
+    <ul class="follows_datas">
+        {% if followers_count == 0 %}
+            <li>There isn't any user that follow you yet. </li>
+        {% endif %}
+        {% for follow in user_follows %}
+            {% if follow.followed_user == user %}
+                <li><i>{{follow.user}}</i></li>
+            {% endif %}
+        {% endfor %}
+        {% if not user_follows %}
+            <li>There isn't any user that follow you yet. </li>
+        {% endif %}
+    </ul>
+<script>
+    var spoilers = document.getElementsByClassName("spoiler");
+    var spoilClick = function(){
+        pchild=this.getElementsByTagName('div');
+        if(pchild[0].style.visibility!='hidden'){
+            pchild[0].style.visibility='hidden';
+            pchild[0].style.height='0';
+        }else{
+            pchild[0].style.visibility=''; pchild[0].style.height=''
+        }
+    }
+    for (var i = 0; i < spoilers.length; i++) {
+    spoilers[i].addEventListener('click', spoilClick, false);
+    }
+</script>
+{% endblock %}
+</body>
+</html>

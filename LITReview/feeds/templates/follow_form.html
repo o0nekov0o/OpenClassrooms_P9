@@ -1,0 +1,16 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form method="POST" action="{% url 'manage_follows' %}">
+{% csrf_token %}
+    <div class="form-group">
+        <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+               placeholder="Enter Username" name="followeduser">
+    </div>
+        <button type="submit" class="btn btn-primary">Follow this User</button>
+</form>
+</body>
+</html>

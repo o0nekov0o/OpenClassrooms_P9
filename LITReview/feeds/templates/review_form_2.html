@@ -1,0 +1,29 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form method="POST" action="{% url 'submitted_reviews' %}">
+{% csrf_token %}
+  <div class="form-group">
+    <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+           placeholder="Enter Rating" name="rating">
+  </div>
+  <div class="form-group">
+    <input type="text" class="form-control" id="exampleInputEmail2" aria-describedby="emailHelp"
+           placeholder="Enter Headline" name="headline">
+  </div>
+  <div class="form-group">
+    <input type="text" class="form-control" id="exampleInputPassword1"
+           placeholder="Enter Body" name="body">
+  </div>
+  <div class="form-check">
+    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+    <label class="form-check-label" for="exampleCheck1">Confirm the Review</label>
+  </div>
+  <input type="hidden" name="ticket" value="{{ ticket_id }}" />
+  <button type="submit" class="btn btn-primary">Submit the Review</button>
+</form>
+</body>
+</html>
