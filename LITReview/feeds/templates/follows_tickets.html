@@ -1,0 +1,74 @@
+{% extends 'partials/base.html' %}
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}LITReview Home{% endblock %}</title>
+</head>
+<body>
+{% block content %}
+<style>
+    a {color: darkgreen;}
+    #ticket_title {
+      background: lightblue;}
+    #ticket_user {
+      background: pink;}
+    #ticket_time_created {
+      background: lightgreen;}
+    #ticket_description {
+      background: #FED8B1;}
+    #review_datas {
+      background: #DCDCDC;}
+    #review_user {
+      background: pink;}
+    #review_time_created {
+      background: lightgreen;}
+    #review_rating {
+      background: lightblue;}
+</style>
+    <div><h4>Welcome {{user}}, here is your follows tickets list. <br>
+    This is created tickets from people that you follow. </h4></div><hr>
+    {% if tickets_count == 0 %}
+        <a href="{% url 'index' %}">
+        <b>There is no ticket that your follows created, so take a look on all the tickets here. </b></a>
+    {% endif %}
+    {% for follow in user_follows %}
+        {% for ticket in tickets %}
+            {% if follow.user == user and ticket.user == follow.followed_user %}
+                <div><i id="ticket_user">From {{ ticket.user }}, </i>
+                <i id="ticket_time_created">at {{ ticket.time_created }} </i>
+                <i id="ticket_title" >for {{ ticket.title }}. </i>
+                <i id="ticket_description">Query : {{ ticket.description }} </i>
+                <div class="spoiler">
+                <b>Click here to add reviews to your follow ticket no matter if there already are or not. </b>
+                <div style="visibility:hidden;height:0">
+                {% include 'review_form_4.html' with ticket_id=ticket.id %} </div></div>
+                <details><summary>Click here to see the already existing reviews for this ticket. </summary>
+                {% for review in reviews %}
+                    {% with ticket as ticket %}
+                    {% with review as review %}
+                        <div id="review_datas">{% include 'included_reviews.html' %}</div>
+                    {% endwith %}
+                    {% endwith %}
+                {% endfor %}
+                </details><hr></div>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+<script>
+    var spoilers = document.getElementsByClassName("spoiler");
+    var spoilClick = function(){
+        pchild=this.getElementsByTagName('div');
+        if(pchild[0].style.visibility!='hidden'){
+            pchild[0].style.visibility='hidden';
+            pchild[0].style.height='0';
+        }else{
+            pchild[0].style.visibility=''; pchild[0].style.height=''
+        }
+    }
+    for (var i = 0; i < spoilers.length; i++) {
+    spoilers[i].addEventListener('click', spoilClick, false);
+    }
+</script>
+{% endblock %}
+</body>
+</html>

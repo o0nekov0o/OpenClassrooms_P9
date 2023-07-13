@@ -41,6 +41,10 @@
             <i id="ticket_time_created">at {{ ticket.time_created }} </i>
             <i id="ticket_title" >for {{ ticket.title }}. </i>
             <i id="ticket_description">Query : {{ ticket.description }} </i>
+            <div class="spoiler">
+            <b>Click here to add reviews to your own ticket no matter if there already are or not. </b>
+            <div style="visibility:hidden;height:0">
+            {% include 'review_form_2.html' with ticket_id=ticket.id %} </div></div>
             <details><summary>Click here to see the already existing reviews for this ticket. </summary>
             {% for review in reviews %}
                 {% with ticket as ticket %}

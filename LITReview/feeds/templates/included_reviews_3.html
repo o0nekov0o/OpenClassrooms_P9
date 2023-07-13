@@ -1,0 +1,16 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% for follow in user_follows %}
+    {% if follow.user == user and review.ticket == ticket and review.user == follow.followed_user %}
+        <li>{{review.body}}
+        <i id="review_user">From {{review.user}}, </i>
+        <i id="review_time_created">at {{review.time_created}} </i>
+        <i id="review_rating">With {{review.rating}}/5 Rating. </i></li>
+    {% endif %}
+{% endfor %}
+</body>
+</html>

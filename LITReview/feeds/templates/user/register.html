@@ -3,14 +3,45 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+<style>
+    #error {color: darkred;}
+    #success {color: darkgreen;}
+</style>
 <div class="row my-4">
     <div class="col-md-6 offset-md-3">
         <div class="border p-3 bg-white">
             <h4>Register Page</h4>
             <hr>
-            <form method="POST">
+            <div id="error">
+            {% if email_error %}
+                <b>{{ email_error }}</b><hr>
+            {% endif %}
+            {% if username_error %}
+                <b>{{ username_error }}</b><hr>
+            {% endif %}</div>
+            <div id="success">
+            {% if signup_success %}
+                <b>{{ signup_success }}</b><hr>
+            {% endif %}</div>
+            <form method="POST" action="{% url 'user-register' %}">
                 {% csrf_token %}
                 {{ form|crispy }}
+                <div class="form-group">
+                    <input type="email" required class="form-control" id="exampleInputEmail1"
+                    aria-describedby="emailHelp" placeholder="Enter Email" name = "email" />
+                </div>
+                <div class="form-group">
+                    <input type="text" required class="form-control" id="exampleInputEmail2"
+                    aria-describedby="emailHelp" placeholder="Enter Username" name = "username" />
+                </div>
+                <div class="form-group">
+                    <input type="password" required class="form-control" id="exampleInputEmail3"
+                    aria-describedby="emailHelp" placeholder="Enter Password" name = "password" />
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" required class="form-check-input" id="exampleCheck1">
+                    <label class="form-check-label" for="exampleCheck1">Confirm the Register</label>
+                  </div>
                 <input class="btn btn-success" type="submit" value="Register">
             </form>
         </div>

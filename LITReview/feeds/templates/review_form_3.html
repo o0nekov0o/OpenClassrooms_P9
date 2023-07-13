@@ -4,7 +4,7 @@
     <title>Title</title>
 </head>
 <body>
-<form method="POST" action="{% url 'created_tickets' %}">
+<form method="POST" action="{% url 'submitted_reviews' %}">
 {% csrf_token %}
   <div class="form-group">
     <input type="text" required class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"

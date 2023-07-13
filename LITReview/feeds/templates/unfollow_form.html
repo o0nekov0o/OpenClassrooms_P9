@@ -4,13 +4,13 @@
     <title>Title</title>
 </head>
 <body>
-<form method="POST" action="{% url 'manage_follows' %}">
+<form method="POST" action="{% url 'online_follows' %}">
 {% csrf_token %}
     <div class="form-group">
         <input type="text" required class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-               placeholder="Enter Username" name="followeduser">
+               placeholder="Enter Username" name="unfolloweduser">
     </div>
-        <button type="submit" class="btn btn-primary">Follow this User</button>
+    <button type="submit" class="btn btn-primary">Unfollow this User</button>
 </form>
 </body>
 </html>
