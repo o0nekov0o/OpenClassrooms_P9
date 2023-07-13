@@ -15,20 +15,24 @@ Including another URLconf
 """
 from django.urls import path
 from django.contrib import admin
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.views import LoginView, LogoutView
 from feeds.views import index, register, created_tickets, manage_follows, \
-    submitted_reviews, follows_tickets, follows_reviews, online_follows
+    submitted_reviews, follows_tickets, follows_reviews, online_follows, profile, profile_update
 
 urlpatterns = [
     path("", index, name='index'),
     path('admin/', admin.site.urls),
+    path('profile/', profile, name='user-profile'),
     path('register/', register, name='user-register'),
     path("manage_follows/", manage_follows, name='manage_follows'),
     path("online_follows/", online_follows, name='online_follows'),
     path("follows_tickets/", follows_tickets, name='follows_tickets'),
     path('follows_reviews/', follows_reviews, name='follows_reviews'),
     path("created_tickets/", created_tickets, name='created_tickets'),
+    path('profile_update/', profile_update, name='user-profile-update'),
     path("submitted_reviews/", submitted_reviews, name='submitted_reviews'),
     path('login/', LoginView.as_view(template_name='user/login.html'), name='user-login'),
     path('logout/', LogoutView.as_view(template_name='user/logout.html'), name='user-logout'),
@@ -41,3 +45,5 @@ urlpatterns = [
     path('password-reset-complete/', auth_views.PasswordResetCompleteView.as_view(
         template_name='registration/password_reset_complete.html'), name='password_reset_complete'),
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

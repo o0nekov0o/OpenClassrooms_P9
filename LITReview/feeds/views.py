@@ -12,7 +12,7 @@ def index(request, *args, **kwargs):
     tickets = Ticket.objects.order_by('-time_created')
     reviews = Review.objects.order_by('-time_created')
     if request.method == "POST":
-        ticket_form = TicketForm(request.POST or None)
+        ticket_form = TicketForm(request.POST, request.FILES or None)
         review_form = ReviewForm(request.POST or None)
         if Ticket.DoesNotExist:
             pass
@@ -29,9 +29,11 @@ def index(request, *args, **kwargs):
             review_to_save.user = request.user
             review_to_save.time_created = datetime.now()
             review_form.save()
-        return render(request, "index.html", {'tickets': tickets, 'reviews': reviews})
+        return render(request, "index.html", {'tickets': tickets, 'reviews': reviews,
+                                              'ticket_form': TicketForm()})
     else:
-        return render(request, "index.html", {'tickets': tickets, 'reviews': reviews})
+        return render(request, "index.html", {'tickets': tickets, 'reviews': reviews,
+                                              'ticket_form': TicketForm()})
 
 
 @login_required(login_url='user-login')
@@ -43,7 +45,7 @@ def created_tickets(request, *args, **kwargs):
         if ticket.user == request.user:
             tickets_count += 1
     if request.method == "POST":
-        ticket_form = TicketForm(request.POST or None)
+        ticket_form = TicketForm(request.POST, request.FILES or None)
         review_form = ReviewForm(request.POST or None)
         if Ticket.DoesNotExist:
             pass
@@ -61,10 +63,12 @@ def created_tickets(request, *args, **kwargs):
             review_to_save.time_created = datetime.now()
             review_form.save()
         return render(request, "created_tickets.html", {'tickets': tickets, 'reviews': reviews,
-                                                        'tickets_count': tickets_count})
+                                                        'tickets_count': tickets_count,
+                                                        'ticket_form': TicketForm()})
     else:
         return render(request, "created_tickets.html", {'tickets': tickets, 'reviews': reviews,
-                                                        'tickets_count': tickets_count})
+                                                        'tickets_count': tickets_count,
+                                                        'ticket_form': TicketForm()})
 
 
 @login_required(login_url='user-login')
@@ -119,31 +123,9 @@ def follows_tickets(request, *args, **kwargs):
         for ticket in tickets:
             if follow.user == request.user and ticket.user == follow.followed_user:
                 tickets_count += 1
-    if request.method == "POST":
-        ticket_form = TicketForm(request.POST or None)
-        review_form = ReviewForm(request.POST or None)
-        if Ticket.DoesNotExist:
-            pass
-        else:
-            ticket_id = int(request.POST['ticket'])
-            review_form.instance.ticket = Ticket.objects.get(pk=ticket_id)
-        if ticket_form.is_valid():
-            ticket_to_save = ticket_form.save(commit=False)
-            ticket_to_save.user = request.user
-            ticket_to_save.time_created = datetime.now()
-            ticket_form.save()
-        if review_form.is_valid():
-            review_to_save = review_form.save(commit=False)
-            review_to_save.user = request.user
-            review_to_save.time_created = datetime.now()
-            review_form.save()
-        return render(request, "follows_tickets.html", {'tickets': tickets, 'reviews': reviews,
-                                                        'tickets_count': tickets_count,
-                                                        'user_follows': user_follows})
-    else:
-        return render(request, "follows_tickets.html", {'tickets': tickets, 'reviews': reviews,
-                                                        'tickets_count': tickets_count,
-                                                        'user_follows': user_follows})
+    return render(request, "follows_tickets.html", {'tickets': tickets, 'reviews': reviews,
+                                                    'tickets_count': tickets_count,
+                                                    'user_follows': user_follows})
 
 
 @login_required(login_url='user-login')
@@ -213,3 +195,11 @@ def register(request, *args, **kwargs):
             return render(request, "user/register.html", {'signup_success': signup_success})
     else:
         return render(request, "user/register.html")
+
+
+def profile(request, *args, **kwargs):
+    return render(request, "user/profile.html")
+
+
+def profile_update(request, *args, **kwargs):
+    return render(request, "user/profile_update.html")
