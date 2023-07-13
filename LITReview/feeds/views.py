@@ -66,6 +66,7 @@ def created_tickets(request, *args, **kwargs):
         return render(request, "created_tickets.html", {'tickets': tickets, 'reviews': reviews,
                                                         'tickets_count': tickets_count})
 
+
 @login_required(login_url='user-login')
 def submitted_reviews(request, *args, **kwargs):
     tickets = Ticket.objects.order_by('-time_created')
@@ -107,6 +108,7 @@ def manage_follows(request, *args, **kwargs):
                                                        'followings_count': followings_count,
                                                        'followers_count': followers_count})
 
+
 @login_required(login_url='user-login')
 def follows_tickets(request, *args, **kwargs):
     tickets = Ticket.objects.order_by('-time_created')
@@ -143,6 +145,7 @@ def follows_tickets(request, *args, **kwargs):
                                                         'tickets_count': tickets_count,
                                                         'user_follows': user_follows})
 
+
 @login_required(login_url='user-login')
 def follows_reviews(request, *args, **kwargs):
     tickets = Ticket.objects.order_by('-time_created')
@@ -161,6 +164,7 @@ def follows_reviews(request, *args, **kwargs):
     return render(request, "follows_reviews.html", {'tickets': tickets, 'reviews': reviews,
                                                     'reviewed_tickets': reviewed_tickets,
                                                     'user_follows': user_follows})
+
 
 @login_required(login_url='user-login')
 def online_follows(request, *args, **kwargs):
