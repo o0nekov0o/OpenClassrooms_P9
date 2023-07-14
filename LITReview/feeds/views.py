@@ -154,6 +154,10 @@ def online_follows(request, *args, **kwargs):
     connected_users = (user for user in user_activity_objects)
     user_follows = UserFollows.objects.order_by('-pk')
     connected_follows = []
+    followings_count = 0
+    for follow in user_follows:
+        if follow.user == request.user:
+            followings_count += 1
     for connected_user in connected_users:
         for follow in user_follows:
             if follow.user == request.user and follow.followed_user == connected_user.user:
@@ -168,9 +172,13 @@ def online_follows(request, *args, **kwargs):
         if not unfollow_form.is_valid():
             unfolloweduser2 = User.objects.get(username=unfolloweduser)
             UserFollows.objects.get(user=request.user, followed_user=unfolloweduser2).delete()
-        return render(request, "online_follows.html", {'connected_follows': connected_follows})
+        return render(request, "online_follows.html", {'connected_follows': connected_follows,
+                                                       'user_follows': user_follows,
+                                                       'followings_count': followings_count})
     else:
-        return render(request, "online_follows.html", {'connected_follows': connected_follows})
+        return render(request, "online_follows.html", {'connected_follows': connected_follows,
+                                                       'user_follows': user_follows,
+                                                       'followings_count': followings_count})
 
 
 def register(request, *args, **kwargs):
@@ -195,6 +203,10 @@ def register(request, *args, **kwargs):
             return render(request, "user/register.html", {'signup_success': signup_success})
     else:
         return render(request, "user/register.html")
+
+
+def create_ticket(request, *args, **kwargs):
+    return render(request, "create_ticket.html")
 
 
 def profile(request, *args, **kwargs):

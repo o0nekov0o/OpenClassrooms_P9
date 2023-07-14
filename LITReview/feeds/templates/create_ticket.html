@@ -1,0 +1,14 @@
+{% extends 'partials/base.html' %}
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}LITReview Home{% endblock %}</title>
+</head>
+<body>
+{% block content %}
+    <div><h4>Welcome {{user}}, here is the ticket from, <br>
+    from which you can submit your tickets. </h4></div><hr>
+    <div>{% include 'ticket_form.html' %}</div>
+{% endblock %}
+</body>
+</html>
