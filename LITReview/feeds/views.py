@@ -206,7 +206,7 @@ def register(request, *args, **kwargs):
 
 
 def create_ticket(request, *args, **kwargs):
-    return render(request, "create_ticket.html")
+    return render(request, "create_ticket.html", {'ticket_form': TicketForm()})
 
 
 def profile(request, *args, **kwargs):
