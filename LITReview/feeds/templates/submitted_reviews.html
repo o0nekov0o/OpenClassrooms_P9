@@ -25,13 +25,13 @@
     #review_rating {
       background: lightblue;}
 </style>
-    <div><h4>Welcome {{user}}, here is the tickets list, <br>
-    from which you submitted your reviews. </h4></div><hr>
-    {% if not reviewed_tickets %}
+    <div><b>Welcome {{user}}, here is the tickets list, <br>
+    from which you submitted your reviews. </b></div><hr>
+    {% if reviews|length == 0 %}
         <a href="{% url 'index' %}">
         <b>There isn't any ticket that you reviewed yet, so take a look on the tickets here. </b></a>
     {% endif %}
-    {% for ticket in reviewed_tickets %}
+    {% for ticket in tickets %}
         <div><i id="ticket_user">From {{ ticket.user }}, </i>
         <i id="ticket_time_created">at {{ ticket.time_created }} </i>
         <i id="ticket_title" >for {{ ticket.title }}. </i>
@@ -44,17 +44,16 @@
         {% endif %}
         {% for review in reviews %}
             {% if forloop.counter == reviews|length %}
-                <div class="spoiler">
-                <b>Click here to add reviews to this ticket in addition to those you already submitted. </b>
-                <div style="visibility:hidden;height:0">
-                {% include 'review_form_3.html' with ticket_id=ticket.id %}</div></div>
+                <details>
+                <summary>Click here to add reviews to this ticket in addition to those you already submitted. </summary>
+                {% include 'review_form_3.html' with ticket_id=ticket.id %}</details>
             {% endif %}
         {% endfor %}
         <details><summary>Click here to see the reviews that you submitted for this ticket. </summary>
         {% for review in reviews %}
             {% with ticket as ticket %}
             {% with review as review %}
-                <div id="review_datas">{% include 'included_reviews_2.html' %}</div>
+                <div id="review_datas">{% include 'included_reviews.html' %}</div>
             {% endwith %}
             {% endwith %}
         {% endfor %}

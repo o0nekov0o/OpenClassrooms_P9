@@ -1,5 +1,6 @@
 import online_users.models
 from django.shortcuts import render
+from django.shortcuts import redirect
 from datetime import datetime, timedelta
 from django.contrib.auth.models import User
 from .models import Ticket, Review, UserFollows
@@ -7,28 +8,32 @@ from django.contrib.auth.decorators import login_required
 from .forms import TicketForm, ReviewForm, FollowForm, RegisterForm
 
 
+def post_method(request):
+    ticket_form = TicketForm(request.POST, request.FILES or None)
+    review_form = ReviewForm(request.POST or None)
+    if Ticket.DoesNotExist:
+        pass
+    else:
+        ticket_id = int(request.POST['ticket'])
+        review_form.instance.ticket = Ticket.objects.get(pk=ticket_id)
+    if ticket_form.is_valid():
+        ticket_to_save = ticket_form.save(commit=False)
+        ticket_to_save.user = request.user
+        ticket_to_save.time_created = datetime.now()
+        ticket_form.save()
+    if review_form.is_valid():
+        review_to_save = review_form.save(commit=False)
+        review_to_save.user = request.user
+        review_to_save.time_created = datetime.now()
+        review_form.save()
+
+
 @login_required(login_url='user-login')
 def index(request, *args, **kwargs):
-    tickets = Ticket.objects.order_by('-time_created')
-    reviews = Review.objects.order_by('-time_created')
+    tickets = Ticket.objects.order_by('-pk')
+    reviews = Review.objects.order_by('-pk')
     if request.method == "POST":
-        ticket_form = TicketForm(request.POST, request.FILES or None)
-        review_form = ReviewForm(request.POST or None)
-        if Ticket.DoesNotExist:
-            pass
-        else:
-            ticket_id = int(request.POST['ticket'])
-            review_form.instance.ticket = Ticket.objects.get(pk=ticket_id)
-        if ticket_form.is_valid():
-            ticket_to_save = ticket_form.save(commit=False)
-            ticket_to_save.user = request.user
-            ticket_to_save.time_created = datetime.now()
-            ticket_form.save()
-        if review_form.is_valid():
-            review_to_save = review_form.save(commit=False)
-            review_to_save.user = request.user
-            review_to_save.time_created = datetime.now()
-            review_form.save()
+        post_method(request)
         return render(request, "index.html", {'tickets': tickets, 'reviews': reviews,
                                               'ticket_form': TicketForm()})
     else:
@@ -38,147 +43,81 @@ def index(request, *args, **kwargs):
 
 @login_required(login_url='user-login')
 def created_tickets(request, *args, **kwargs):
-    tickets = Ticket.objects.order_by('-time_created')
-    reviews = Review.objects.order_by('-time_created')
-    tickets_count = 0
-    for ticket in tickets:
-        if ticket.user == request.user:
-            tickets_count += 1
+    tickets = Ticket.objects.filter(user=request.user).order_by('-pk')
+    reviews = Review.objects.order_by('-pk')
     if request.method == "POST":
-        ticket_form = TicketForm(request.POST, request.FILES or None)
-        review_form = ReviewForm(request.POST or None)
-        if Ticket.DoesNotExist:
-            pass
-        else:
-            ticket_id = int(request.POST['ticket'])
-            review_form.instance.ticket = Ticket.objects.get(pk=ticket_id)
-        if ticket_form.is_valid():
-            ticket_to_save = ticket_form.save(commit=False)
-            ticket_to_save.user = request.user
-            ticket_to_save.time_created = datetime.now()
-            ticket_form.save()
-        if review_form.is_valid():
-            review_to_save = review_form.save(commit=False)
-            review_to_save.user = request.user
-            review_to_save.time_created = datetime.now()
-            review_form.save()
+        post_method(request)
         return render(request, "created_tickets.html", {'tickets': tickets, 'reviews': reviews,
-                                                        'tickets_count': tickets_count,
                                                         'ticket_form': TicketForm()})
     else:
         return render(request, "created_tickets.html", {'tickets': tickets, 'reviews': reviews,
-                                                        'tickets_count': tickets_count,
                                                         'ticket_form': TicketForm()})
 
 
 @login_required(login_url='user-login')
 def submitted_reviews(request, *args, **kwargs):
-    tickets = Ticket.objects.order_by('-time_created')
-    reviews = Review.objects.order_by('-time_created')
-    reviewed_tickets = []
-    for ticket in tickets:
-        for review in reviews:
-            if review.ticket == ticket and review.user == request.user:
-                reviewed_tickets.append(ticket)
-    for reviewed_ticket in reviewed_tickets:
-        while reviewed_tickets.count(reviewed_ticket) > 1:
-            reviewed_tickets.remove(reviewed_ticket)
-    return render(request, "submitted_reviews.html", {'tickets': tickets, 'reviews': reviews,
-                                                      'reviewed_tickets': reviewed_tickets})
+    reviews = Review.objects.filter(user=request.user).order_by('-pk')
+    tickets = Ticket.objects.filter(review__in=reviews).order_by('-pk').distinct()
+    return render(request, "submitted_reviews.html", {'tickets': tickets, 'reviews': reviews})
 
 
 @login_required(login_url='user-login')
 def manage_follows(request, *args, **kwargs):
-    user_follows = UserFollows.objects.order_by('-pk')
-    followings_count = 0
-    followers_count = 0
-    for follow in user_follows:
-        if follow.user == request.user:
-            followings_count += 1
-        elif follow.followed_user == request.user:
-            followers_count += 1
+    followed_extract = UserFollows.objects.filter(user=request.user).values_list('followed_user_id', flat=True)
+    followed_users = User.objects.filter(pk__in=followed_extract).all()
+    subbed_extract = UserFollows.objects.filter(followed_user=request.user).values_list('user_id', flat=True)
+    subbed_users = User.objects.filter(pk__in=subbed_extract).all()
     if request.method == "POST":
         follow_form = FollowForm(request.POST or None)
-        followeduser = str(request.POST['followeduser'])
-        follow_form.instance.followed_user = User.objects.get(username=followeduser)
-        if not follow_form.is_valid():
-            followeduser2 = User.objects.get(username=followeduser)
-            UserFollows.objects.create(user=request.user, followed_user=followeduser2)
-        return render(request, "manage_follows.html", {'user_follows': user_follows,
-                                                       'followings_count': followings_count,
-                                                       'followers_count': followers_count})
+        followed_user = str(request.POST['followed_extract'])
+        if follow_form.is_valid():
+            follow_to_save = follow_form.save(commit=False)
+            follow_to_save.followed_user = User.objects.get(username=followed_user)
+            follow_to_save.user = request.user
+            follow_form.save()
+        else:
+            print(follow_form.errors.as_data())
+        return render(request, "manage_follows.html", {'followed_users': followed_users,
+                                                       'subbed_users': subbed_users})
     else:
-        return render(request, "manage_follows.html", {'user_follows': user_follows,
-                                                       'followings_count': followings_count,
-                                                       'followers_count': followers_count})
+        return render(request, "manage_follows.html", {'followed_users': followed_users,
+                                                       'subbed_users': subbed_users})
 
 
 @login_required(login_url='user-login')
 def follows_tickets(request, *args, **kwargs):
-    tickets = Ticket.objects.order_by('-time_created')
-    reviews = Review.objects.order_by('-time_created')
-    user_follows = UserFollows.objects.order_by('-pk')
-    tickets_count = 0
-    for follow in user_follows:
-        for ticket in tickets:
-            if follow.user == request.user and ticket.user == follow.followed_user:
-                tickets_count += 1
-    return render(request, "follows_tickets.html", {'tickets': tickets, 'reviews': reviews,
-                                                    'tickets_count': tickets_count,
-                                                    'user_follows': user_follows})
+    followed_users = UserFollows.objects.filter(user=request.user).values_list('followed_user_id', flat=True)
+    tickets = Ticket.objects.filter(user__pk__in=followed_users).order_by('-pk')
+    reviews = Review.objects.order_by('-pk')
+    return render(request, "follows_tickets.html", {'tickets': tickets, 'reviews': reviews})
 
 
 @login_required(login_url='user-login')
 def follows_reviews(request, *args, **kwargs):
-    tickets = Ticket.objects.order_by('-time_created')
-    reviews = Review.objects.order_by('-time_created')
-    user_follows = UserFollows.objects.order_by('-pk')
-    reviewed_tickets = []
-    for ticket in tickets:
-        for review in reviews:
-            for follow in user_follows:
-                if follow.user == request.user and review.ticket == ticket \
-                        and review.user == follow.followed_user:
-                    reviewed_tickets.append(ticket)
-    for reviewed_ticket in reviewed_tickets:
-        while reviewed_tickets.count(reviewed_ticket) > 1:
-            reviewed_tickets.remove(reviewed_ticket)
-    return render(request, "follows_reviews.html", {'tickets': tickets, 'reviews': reviews,
-                                                    'reviewed_tickets': reviewed_tickets,
-                                                    'user_follows': user_follows})
+    followed_users = UserFollows.objects.filter(user=request.user).values_list('followed_user_id', flat=True)
+    reviews = Review.objects.filter(user__pk__in=followed_users).order_by('-pk')
+    tickets = Ticket.objects.filter(review__in=reviews).order_by('-pk').distinct()
+    return render(request, "follows_reviews.html", {'tickets': tickets, 'reviews': reviews})
 
 
 @login_required(login_url='user-login')
 def online_follows(request, *args, **kwargs):
     user_activity_objects = online_users.models.OnlineUserActivity.get_user_activities(timedelta(seconds=60))
     connected_users = (user for user in user_activity_objects)
-    user_follows = UserFollows.objects.order_by('-pk')
-    connected_follows = []
-    followings_count = 0
-    for follow in user_follows:
-        if follow.user == request.user:
-            followings_count += 1
-    for connected_user in connected_users:
-        for follow in user_follows:
-            if follow.user == request.user and follow.followed_user == connected_user.user:
-                connected_follows.append(follow.followed_user)
-    for connected_follow in connected_follows:
-        while connected_follows.count(connected_follow) > 1:
-            connected_follows.remove(connected_follow)
+    followed_extract = UserFollows.objects.filter(user=request.user).values_list('followed_user_id', flat=True)
+    connected_follows = User.objects.filter(onlineuseractivity__in=connected_users, pk__in=followed_extract)
+    followed_users = User.objects.filter(pk__in=followed_extract).all()
     if request.method == "POST":
         unfollow_form = FollowForm(request.POST or None)
-        unfolloweduser = str(request.POST['unfolloweduser'])
-        unfollow_form.instance.followed_user = User.objects.get(username=unfolloweduser)
-        if not unfollow_form.is_valid():
-            unfolloweduser2 = User.objects.get(username=unfolloweduser)
-            UserFollows.objects.get(user=request.user, followed_user=unfolloweduser2).delete()
+        unfollowed_extract = str(request.POST['unfollowed_user'])
+        if unfollow_form.is_valid():
+            unfollowed_user = User.objects.get(username=unfollowed_extract)
+            UserFollows.objects.get(user=request.user, followed_user=unfollowed_user).delete()
         return render(request, "online_follows.html", {'connected_follows': connected_follows,
-                                                       'user_follows': user_follows,
-                                                       'followings_count': followings_count})
+                                                       'followed_users': followed_users})
     else:
         return render(request, "online_follows.html", {'connected_follows': connected_follows,
-                                                       'user_follows': user_follows,
-                                                       'followings_count': followings_count})
+                                                       'followed_users': followed_users})
 
 
 def register(request, *args, **kwargs):
@@ -203,6 +142,45 @@ def register(request, *args, **kwargs):
             return render(request, "user/register.html", {'signup_success': signup_success})
     else:
         return render(request, "user/register.html")
+
+
+@login_required
+def edit_ticket(request, *args, **kwargs):
+    if request.method == 'POST':
+        ticket_id = int(request.POST['ticket'])
+        ticket = Ticket.objects.get(id=ticket_id)
+        ticket_form = TicketForm(request.POST, request.FILES, instance=ticket)
+        if not ticket_form.is_valid():
+            ticket_form = TicketForm(instance=ticket)
+            return render(request, 'edit_ticket.html', {'ticket_form': ticket_form, 'ticket': ticket})
+        if ticket_form.is_valid():
+            ticket_form.time_created = datetime.now()
+            ticket_form.save()
+            return redirect(index)
+    else:
+        return redirect(index)
+
+
+@login_required
+def delete_ticket(request, *args, **kwargs):
+    if request.method == 'POST':
+        ticket_id = int(request.POST['ticket'])
+        ticket = Ticket.objects.get(id=ticket_id)
+        ticket_form = TicketForm(request.POST, request.FILES, instance=ticket)
+        if not ticket_form.is_valid():
+            ticket_form = TicketForm(instance=ticket)
+            return render(request, 'delete_ticket.html', {'ticket_form': ticket_form, 'ticket': ticket})
+    elif request.method == 'GET':
+        if Ticket.DoesNotExist:
+            return redirect(index)
+        ticket_id = int(request.GET['ticket'])
+        ticket = Ticket.objects.get(id=ticket_id)
+        ticket_form = TicketForm(request.GET, request.FILES, instance=ticket)
+        if not ticket_form.is_valid():
+            ticket.delete()
+            return redirect(index)
+    else:
+        return redirect(index)
 
 
 def create_ticket(request, *args, **kwargs):

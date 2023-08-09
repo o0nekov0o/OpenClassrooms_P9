@@ -25,17 +25,17 @@
     #review_rating {
       background: lightblue;}
 </style>
-    <div><b>Welcome {{user}}, here is the tickets list, <br>
-    from which your follows submitted reviews. </b></div><hr>
-    {% if reviews|length == 0 %}
+    <div><h4>Welcome {{user}}, here is the tickets list, <br>
+    from which you submitted your reviews. </h4></div><hr>
+    {% if not reviewed_tickets %}
         <a href="{% url 'index' %}">
-        <b>There is no ticket that your follows reviewed, so take a look on all the tickets here. </b></a>
+        <b>There isn't any ticket that you reviewed yet, so take a look on the tickets here. </b></a>
     {% endif %}
-    {% for ticket in tickets %}
+    {% for ticket in reviewed_tickets %}
         <div><i id="ticket_user">From {{ ticket.user }}, </i>
         <i id="ticket_time_created">at {{ ticket.time_created }} </i>
         <i id="ticket_title" >for {{ ticket.title }}. </i>
-        <i id="ticket_description">Query : {{ ticket.description }}  <br></i>
+        <i id="ticket_description">Query : {{ ticket.description }} <br></i>
         {% if ticket.image %}
              <img src="{{ ticket.image.url }}" height="300" width="600">
         {% endif %}
@@ -44,18 +44,17 @@
         {% endif %}
         {% for review in reviews %}
             {% if forloop.counter == reviews|length %}
-                <details>
-                <summary>Click here to add reviews to this ticket in addition to those your follows submitted. </summary>
-                {% include 'review_form_5.html' with ticket_id=ticket.id %}</details>
+                <div class="spoiler">
+                <b>Click here to add reviews to this ticket in addition to those you already submitted. </b>
+                <div style="visibility:hidden;height:0">
+                {% include 'review_form_3.html' with ticket_id=ticket.id %}</div></div>
             {% endif %}
         {% endfor %}
-        <details><summary>Click here to see the reviews your follows submitted for this ticket. </summary>
+        <details><summary>Click here to see the reviews that you submitted for this ticket. </summary>
         {% for review in reviews %}
             {% with ticket as ticket %}
             {% with review as review %}
-            {% with user_follows as user_follows %}
-                <div id="review_datas">{% include 'included_reviews.html' %}</div>
-            {% endwith %}
+                <div id="review_datas">{% include 'included_reviews_2.html' %}</div>
             {% endwith %}
             {% endwith %}
         {% endfor %}

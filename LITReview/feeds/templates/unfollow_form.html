@@ -8,7 +8,8 @@
 {% csrf_token %}
     <div class="form-group">
         <input type="text" required class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-               placeholder="Enter Username" name="unfolloweduser">
+               placeholder="Enter Username" name="unfollowed_user">
+        <input type="hidden" name="followed_user" value="1" />
     </div>
     <button type="submit" class="btn btn-primary">Unfollow this User</button>
 </form>

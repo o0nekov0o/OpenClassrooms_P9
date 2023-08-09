@@ -20,14 +20,17 @@ from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.views import LoginView, LogoutView
 from feeds.views import index, register, created_tickets, manage_follows, submitted_reviews, \
-    follows_tickets, follows_reviews, online_follows, create_ticket, profile, profile_update
+    follows_tickets, follows_reviews, online_follows, edit_ticket, delete_ticket, create_ticket, \
+    profile, profile_update
 
 urlpatterns = [
     path("", index, name='index'),
     path('admin/', admin.site.urls),
     path('profile/', profile, name='user-profile'),
     path('register/', register, name='user-register'),
+    path('edit_ticket/', edit_ticket, name='edit_ticket'),
     path('create_ticket/', create_ticket, name='create_ticket'),
+    path('delete_ticket/', delete_ticket, name='delete_ticket'),
     path("manage_follows/", manage_follows, name='manage_follows'),
     path("online_follows/", online_follows, name='online_follows'),
     path("follows_tickets/", follows_tickets, name='follows_tickets'),

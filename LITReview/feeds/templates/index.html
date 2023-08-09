@@ -7,6 +7,8 @@
 <body>
 {% block content %}
 <style>
+    form {
+    display: inline-block;}
     #ticket_title {
       background: lightblue;}
     #ticket_user {
@@ -24,32 +26,41 @@
     #review_rating {
       background: lightblue;}
 </style>
-    <div class="spoiler">
-    <h4>Welcome {{user}}, here is the tickets list. <br>
-        Click here to add new tickets to this list. </h4>
-    <div style="visibility:hidden;height:0">
-    {% include 'ticket_form.html' %}</div></div><hr>
+    <details>
+    <summary><b>Welcome {{user}}, here is the tickets list. <br>
+    Click here to add new tickets to this list. </b></summary>
+    {% include 'ticket_form.html' %}</details><hr>
     {% if not tickets %}
-        <div class="spoiler">
-        <b>There isn't any ticket that was created yet, so click here to add new tickets. </b>
-        <div style="visibility:hidden;height:0">
-        {% include 'ticket_form.html' with ticket_id=ticket.id %}</div></div>
+        <details>
+        <summary> There isn't any ticket that was created yet, so click here to add new tickets. </summary>
+        {% include 'ticket_form.html' with ticket_id=ticket.id %}</details>
     {% endif %}
     {% for ticket in tickets %}
         <div><i id="ticket_user">From {{ ticket.user }}, </i>
         <i id="ticket_time_created">at {{ ticket.time_created }} </i>
         <i id="ticket_title" >for {{ ticket.title }}. </i>
-        <i id="ticket_description">Query : {{ ticket.description }} <br></i>
+        <i id="ticket_description">Query : {{ ticket.description }} </i>
+        {% if ticket.user == user %}
+            <form method="POST" action="{% url 'edit_ticket' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="ticket" value="{{ ticket.id }}" />
+                <button type="submit">edit</button>
+            </form>
+            <form method="POST" action="{% url 'delete_ticket' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="ticket" value="{{ ticket.id }}" />
+                <button type="submit">delete</button>
+            </form><br>
+        {% endif %}
         {% if ticket.image %}
-             <img src="{{ ticket.image.url }}" height="300" width="600">
+            <img src="{{ ticket.image.url }}" height="300" width="600">
         {% endif %}
         {% if not ticket.image %}
             <img src="/media/image-not-found-1-scaled-1150x647.png" height="300" width="600">
         {% endif %}
-        <div class="spoiler">
-        <b>Click here to add reviews to the above ticket no matter if there already are or not. </b>
-        <div style="visibility:hidden;height:0">
-        {% include 'review_form.html' with ticket_id=ticket.id %} </div></div>
+        <details>
+        <summary>Click here to add reviews to the above ticket no matter if there already are or not. </summary>
+        {% include 'review_form.html' with ticket_id=ticket.id %}</details>
         <details><summary>Click here to see the already existing reviews for this ticket. </summary>
         {% for review in reviews %}
             {% with ticket as ticket %}

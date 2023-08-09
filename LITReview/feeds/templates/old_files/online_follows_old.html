@@ -10,27 +10,33 @@
     .follows_datas {
       background: lightblue;}
 </style>
-    <details>
-    <summary><b>Welcome {{user}}, here is online follows. <br>
-    Click here to unsubscribe from your follows. </b></summary>
-    {% include 'unfollow_form.html' %}</details><hr>
+    <div class="spoiler">
+    <h4>Welcome {{user}}, here is online follows. <br>Click here to unsubscribe from your follows. </h4>
+    <div style="visibility:hidden;height:0">
+    {% include 'unfollow_form.html' %}</div></div><hr>
     <b>Online people that I follow : </b>
     <ul class="follows_datas">
-        {% if connected_follows|length == 0 %}
+        {% if not connected_follows %}
             <li>There is nobody who's online among the people that you follow.</li>
+        {% elif connected_follows %}
+            {% for follow in connected_follows %}
+                <li><i>{{ follow }}</i></li>
+            {% endfor %}
         {% endif %}
-        {% for follow in connected_follows %}
-            <li><i>{{ follow }}</i></li>
-        {% endfor %}
     </ul>
     <b>All the people that I follow : </b>
     <ul class="follows_datas">
-        {% if followed_users|length == 0 %}
+        {% if followings_count == 0 %}
             <li>There isn't any user that you follow yet. </li>
         {% endif %}
-        {% for follow in followed_users %}
-            <li><i>{{ follow }}</i></li>
+        {% for follow in user_follows %}
+            {% if follow.user == user %}
+                <li><i>{{follow.followed_user}}</i></li>
+            {% endif %}
         {% endfor %}
+        {% if not user_follows %}
+            <li>There isn't any user that you follow yet. </li>
+        {% endif %}
     </ul>
 <script>
     var spoilers = document.getElementsByClassName("spoiler");

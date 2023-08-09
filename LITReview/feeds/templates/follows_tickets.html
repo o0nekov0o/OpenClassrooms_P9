@@ -25,40 +25,35 @@
     #review_rating {
       background: lightblue;}
 </style>
-    <div><h4>Welcome {{user}}, here is your follows tickets list. <br>
-    This is created tickets from people that you follow. </h4></div><hr>
-    {% if tickets_count == 0 %}
+    <div><b>Welcome {{user}}, here is your follows tickets list. <br>
+    This is created tickets from people that you follow. </b></div><hr>
+    {% if tickets|length == 0 %}
         <a href="{% url 'index' %}">
         <b>There is no ticket that your follows created, so take a look on all the tickets here. </b></a>
     {% endif %}
-    {% for follow in user_follows %}
-        {% for ticket in tickets %}
-            {% if follow.user == user and ticket.user == follow.followed_user %}
-                <div><i id="ticket_user">From {{ ticket.user }}, </i>
-                <i id="ticket_time_created">at {{ ticket.time_created }} </i>
-                <i id="ticket_title" >for {{ ticket.title }}. </i>
-                <i id="ticket_description">Query : {{ ticket.description }}  <br></i>
-                {% if ticket.image %}
-                     <img src="{{ ticket.image.url }}" height="300" width="600">
-                {% endif %}
-                {% if not ticket.image %}
-                    <img src="/media/image-not-found-1-scaled-1150x647.png" height="300" width="600">
-                {% endif %}
-                <div class="spoiler">
-                <b>Click here to add reviews to your follow ticket no matter if there already are or not. </b>
-                <div style="visibility:hidden;height:0">
-                {% include 'review_form_4.html' with ticket_id=ticket.id %} </div></div>
-                <details><summary>Click here to see the already existing reviews for this ticket. </summary>
-                {% for review in reviews %}
-                    {% with ticket as ticket %}
-                    {% with review as review %}
-                        <div id="review_datas">{% include 'included_reviews.html' %}</div>
-                    {% endwith %}
-                    {% endwith %}
-                {% endfor %}
-                </details><hr></div>
-            {% endif %}
+    {% for ticket in tickets %}
+        <div><i id="ticket_user">From {{ ticket.user }}, </i>
+        <i id="ticket_time_created">at {{ ticket.time_created }} </i>
+        <i id="ticket_title" >for {{ ticket.title }}. </i>
+        <i id="ticket_description">Query : {{ ticket.description }}  <br></i>
+        {% if ticket.image %}
+             <img src="{{ ticket.image.url }}" height="300" width="600">
+        {% endif %}
+        {% if not ticket.image %}
+            <img src="/media/image-not-found-1-scaled-1150x647.png" height="300" width="600">
+        {% endif %}
+        <details>
+        <summary>Click here to add reviews to your follow ticket no matter if there already are or not. </summary>
+        {% include 'review_form_4.html' with ticket_id=ticket.id %}</details>
+        <details><summary>Click here to see the already existing reviews for this ticket. </summary>
+        {% for review in reviews %}
+            {% with ticket as ticket %}
+            {% with review as review %}
+                <div id="review_datas">{% include 'included_reviews.html' %}</div>
+            {% endwith %}
+            {% endwith %}
         {% endfor %}
+        </details><hr></div>
     {% endfor %}
 <script>
     var spoilers = document.getElementsByClassName("spoiler");

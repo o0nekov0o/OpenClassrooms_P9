@@ -1,0 +1,24 @@
+{% extends 'partials/base.html' %}
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}LITReview Home{% endblock %}</title>
+</head>
+<body>
+{% block content %}
+    <div><b>Welcome {{user}}, here is the ticket form, <br>
+    from which you can delete your tickets. </b></div><hr>
+    <form method="GET" action="{% url 'delete_ticket' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <b>Click below to confirm the deleting of the ticket : </b><br>
+        <input type="hidden" name="ticket" value="{{ ticket.id }}" />
+        <button type="submit" class="btn btn-primary">Confirm Deleting</button>
+    </form><hr>
+    <form method="GET" action="{% url 'index' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <b>Click below to go back to the list of the tickets : </b><br>
+        <button type="submit" class="btn btn-primary">Access to Tickets</button>
+    </form><hr>
+{% endblock %}
+</body>
+</html>
