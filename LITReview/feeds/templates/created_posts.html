@@ -8,17 +8,17 @@
 </head>
 <body>
 {% block content %}
-    <details><summary><b>Welcome {{user}}, here is the posts list. <br>
+    <details><summary><b>Welcome {{user}}, here is your posts list. <br>
     Click here to add new tickets to this list. </b></summary>
-    {% include 'ticket_form.html' %}</details><hr>
+    {% include 'ticket_form_2.html' %}</details><hr>
     {% if not tickets %}
-        <details><summary><b>There isn't any post that was published yet,
+        <details><summary><b>There isn't any post that you published yet,
         so click here to add new tickets. </b></summary>
         {% include 'ticket_form.html' with ticket_id=ticket.id %}</details><hr>
     {% endif %}
     {% for post in posts %}
         {% if post|class_name == "Ticket" %}
-            {% include 'tickets_displaying.html' with redirect='index' %}
+            {% include 'tickets_displaying.html' with redirect='created_posts' %}
         {% endif %}
         {% if post|class_name == "Review" %}
             {% include 'reviews_displaying.html' %}

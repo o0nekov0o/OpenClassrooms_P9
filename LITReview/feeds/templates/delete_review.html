@@ -6,13 +6,13 @@
 </head>
 <body>
 {% block content %}
-    <div><b>Welcome {{user}}, here is the ticket form, <br>
-    from which you can delete your tickets. </b></div><hr>
-    <form method="POST" action="{% url 'delete_ticket' %}" enctype="multipart/form-data">
+    <div><b>Welcome {{user}}, here is the review form, <br>
+    from which you can delete your reviews. </b></div><hr>
+    <form method="POST" action="{% url 'delete_review' %}" enctype="multipart/form-data">
         {% csrf_token %}
-        <b>Click below to confirm the deleting of the ticket : </b><br>
+        <b>Click below to confirm the deleting of the review : </b><br>
         <input type="hidden" name="delete" value="yes" />
-        <input type="hidden" name="ticket" value="{{ ticket.id }}" />
+        <input type="hidden" name="review" value="{{ review.id }}" />
         <button type="submit" class="btn btn-danger">Confirm the Deleting</button>
     </form><hr>
     <form method="GET" action="{% url 'index' %}" enctype="multipart/form-data">

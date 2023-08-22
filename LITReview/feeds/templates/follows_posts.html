@@ -8,17 +8,16 @@
 </head>
 <body>
 {% block content %}
-    <details><summary><b>Welcome {{user}}, here is the posts list. <br>
-    Click here to add new tickets to this list. </b></summary>
-    {% include 'ticket_form.html' %}</details><hr>
-    {% if not tickets %}
-        <details><summary><b>There isn't any post that was published yet,
-        so click here to add new tickets. </b></summary>
-        {% include 'ticket_form.html' with ticket_id=ticket.id %}</details><hr>
+    <b>Welcome {{user}}, here is your follows posts list. <br>
+    This is tickets and reviews your follows published. </b><hr>
+    {% if not posts %}
+        <a href="{% url 'index' %}"><b>
+        There is no posts that your follows published,
+        so take a look on all the posts here. </b></a><hr>
     {% endif %}
     {% for post in posts %}
         {% if post|class_name == "Ticket" %}
-            {% include 'tickets_displaying.html' with redirect='index' %}
+            {% include 'tickets_displaying.html' with redirect='follows_posts' %}
         {% endif %}
         {% if post|class_name == "Review" %}
             {% include 'reviews_displaying.html' %}

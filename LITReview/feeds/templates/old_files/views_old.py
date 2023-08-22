@@ -63,11 +63,11 @@ def created_tickets(request, *args, **kwargs):
             review_to_save.user = request.user
             review_to_save.time_created = datetime.now()
             review_form.save()
-        return render(request, "created_tickets.html", {'tickets': tickets, 'reviews': reviews,
+        return render(request, "created_posts.html", {'tickets': tickets, 'reviews': reviews,
                                                         'tickets_count': tickets_count,
                                                         'ticket_form': TicketForm()})
     else:
-        return render(request, "created_tickets.html", {'tickets': tickets, 'reviews': reviews,
+        return render(request, "created_posts.html", {'tickets': tickets, 'reviews': reviews,
                                                         'tickets_count': tickets_count,
                                                         'ticket_form': TicketForm()})
 
@@ -124,7 +124,7 @@ def follows_tickets(request, *args, **kwargs):
         for ticket in tickets:
             if follow.user == request.user and ticket.user == follow.followed_user:
                 tickets_count += 1
-    return render(request, "follows_tickets.html", {'tickets': tickets, 'reviews': reviews,
+    return render(request, "follows_posts.html", {'tickets': tickets, 'reviews': reviews,
                                                     'tickets_count': tickets_count,
                                                     'user_follows': user_follows})
 

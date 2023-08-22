@@ -10,11 +10,11 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link text-white" href="{% url 'created_posts' %}">CreatedPosts <span
+                    <a class="nav-link text-white" href="{% url 'created_tickets' %}">CreatedTickets <span
                             class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link text-white" href="{% url 'follows_posts' %}">FollowsPosts <span
+                    <a class="nav-link text-white" href="{% url 'submitted_reviews' %}">SubmittedReviews <span
                             class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item active">
@@ -22,11 +22,19 @@
                             class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link text-white" href="{% url 'create_ticket' %}">CreateTickets <span
+                    <a class="nav-link text-white" href="{% url 'follows_tickets' %}">FollowsTickets <span
                             class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link text-white" href="{% url 'create_review' %}">CreateReviews <span
+                    <a class="nav-link text-white" href="{% url 'follows_reviews' %}">FollowsReviews <span
+                            class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link text-white" href="{% url 'online_follows' %}">OnlineFollows <span
+                            class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link text-white" href="{% url 'create_ticket' %}">CreateYourTickets <span
                             class="sr-only">(current)</span></a>
                 </li>
             </ul>

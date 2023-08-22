@@ -7,7 +7,8 @@
 <body>
 {% block content %}
 <style>
-    a {color: darkgreen;}
+    form {
+    display: inline-block;}
     #ticket_title {
       background: lightblue;}
     #ticket_user {
@@ -25,31 +26,44 @@
     #review_rating {
       background: lightblue;}
 </style>
-    <div><b>Welcome {{user}}, here is the tickets list, <br>
-    from which you submitted your reviews. </b></div><hr>
-    {% if reviews|length == 0 %}
-        <a href="{% url 'index' %}">
-        <b>There isn't any ticket that you reviewed yet, so take a look on the tickets here. </b></a>
+    <details>
+    <summary><b>Welcome {{user}}, here is the tickets list. <br>
+    Click here to add new tickets to this list. </b></summary>
+    {% include 'ticket_form.html' %}</details><hr>
+    {% if not tickets %}
+        <details>
+        <summary> There isn't any ticket that was created yet, so click here to add new tickets. </summary>
+        {% include 'ticket_form.html' with ticket_id=ticket.id %}</details>
     {% endif %}
     {% for ticket in tickets %}
         <div><i id="ticket_user">From {{ ticket.user }}, </i>
         <i id="ticket_time_created">at {{ ticket.time_created }} </i>
         <i id="ticket_title" >for {{ ticket.title }}. </i>
-        <i id="ticket_description">Query : {{ ticket.description }} <br></i>
+        <i id="ticket_description">Query : {{ ticket.description }} </i>
+        {% if ticket.user == user %}
+            <form method="POST" action="{% url 'edit_ticket' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="ticket" value="{{ ticket.id }}" />
+                <button type="submit">edit</button>
+            </form>
+            <form method="POST" action="{% url 'delete_ticket' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="ticket" value="{{ post.id }}" />
+                <button type="submit">delete</button>
+            </form><br>
+        {% elif not ticket.user == user %}
+            <br>
+        {% endif %}
         {% if ticket.image %}
-             <img src="{{ ticket.image.url }}" height="300" width="600">
+            <img src="{{ ticket.image.url }}" height="300" width="600">
         {% endif %}
         {% if not ticket.image %}
             <img src="/media/image-not-found-1-scaled-1150x647.png" height="300" width="600">
         {% endif %}
-        {% for review in reviews %}
-            {% if forloop.counter == reviews|length %}
-                <details>
-                <summary>Click here to add reviews to this ticket in addition to those you already submitted. </summary>
-                {% include 'review_form_3.html' with ticket_id=ticket.id %}</details>
-            {% endif %}
-        {% endfor %}
-        <details><summary>Click here to see the reviews that you submitted for this ticket. </summary>
+        <details>
+        <summary>Click here to add reviews to the above ticket no matter if there already are or not. </summary>
+        {% include 'review_form.html' with ticket_id=ticket.id %}</details>
+        <details><summary>Click here to see the already existing reviews for this ticket. </summary>
         {% for review in reviews %}
             {% with ticket as ticket %}
             {% with review as review %}

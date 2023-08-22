@@ -1,0 +1,18 @@
+form, div, details {
+    display: inline;}
+#ticket_title {
+  background: lightblue;}
+#ticket_user {
+  background: pink;}
+#ticket_time_created {
+  background: lightgreen;}
+#ticket_description {
+  background: #FED8B1;}
+#review_datas {
+  background: #DCDCDC;}
+#review_user {
+  background: pink;}
+#review_time_created {
+  background: lightgreen;}
+#review_rating {
+  background: lightblue;}

@@ -1,0 +1,41 @@
+{% if post.user == user %}
+<form method="POST" action="{% url 'edit_ticket' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="ticket" value="{{ post.id }}" />
+    <button type="submit" class="btn btn-primary">Edit Below Ticket</button>
+</form>
+<form method="POST" action="{% url 'delete_ticket' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="ticket" value="{{ post.id }}" />
+    <button type="submit" class="btn btn-danger">Delete Below Ticket</button>
+</form><hr>
+{% endif %}
+{{ post.user }} created a ticket at {{ post.time_created }} <br>
+{{ post.title }} <br>
+{{ post.description }} <br>
+{% if post.image %}
+    <img src="{{ post.image.url }}" height="300" width="600"> <hr>
+{% endif %}
+{% if not post.image %}
+    <img src="/media/image_not_found.png" height="300" width="600"> <hr>
+{% endif %}
+{% if post.review_set.all %}
+    <details><summary><b>Above Ticket Reviewed </b></summary><br>
+    {% for review in post.review_set.all %}
+    {{ review.user }} submitted a review at {{ review.time_created }} <br>
+    <b>{{ review.headline }} - {{ review.rating }}/5 Rating </b><br>
+    {{ review.body }}
+    {% endfor %}
+    </details><hr>
+{% endif %}
+{% if not post.review_set.all %}
+    <details><summary><b>Review Above Ticket </b></summary>
+    {% if redirect == 'index' %}
+        {% include 'review_form.html' %}
+    {% elif redirect == 'created_posts' %}
+        {% include 'review_form_2.html' %}
+    {% elif redirect == 'follows_posts' %}
+        {% include 'review_form_3.html' %}
+    {% endif %}
+    </details><hr>
+{% endif %}

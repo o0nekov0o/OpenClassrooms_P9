@@ -3,50 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}LITReview Home{% endblock %}</title>
+    <link href="static/style.css" rel="stylesheet" />
 </head>
 <body>
 {% block content %}
-<style>
-    .follows_datas {
-      background: lightblue;}
-</style>
     <details>
     <summary><b>Welcome {{user}}, here is your follows. <br>
     Click here to add users to your follows. </b></summary>
     {% include 'follow_form.html' %}</details><hr>
     <b>People that I follow : </b>
-    <ul class="follows_datas">
+    <p class="follows_datas">
         {% if followed_users|length == 0 %}
-            <li>There isn't any user that you follow yet. </li>
+            There isn't any user that you follow yet. <br>
         {% endif %}
-        {% for user in followed_users %}
-            <li><i>{{user}}</i></li>
+        {% for followed_user in followed_users %}
+            <table class="table table-sm table-bordered table-info"><tbody><tr><td><i>{{ followed_user }}
+            </i></td><td>
+            <form method="POST" action="{% url 'delete_follow' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="followed_user" value="{{ followed_user.id }}" />
+                <button type="submit" class="btn btn-danger btn-sm">Delete this Follow</button>
+            </form></td></tr></tbody></table>
         {% endfor %}
-    </ul>
+    </p><hr>
     <b>People that follow me : </b>
     <ul class="follows_datas">
         {% if subbed_users|length == 0 %}
             <li>There isn't any user that follow you yet. </li>
         {% endif %}
-        {% for user in subbed_users %}
-            <li><i>{{user}}</i></li>
+        {% for subbed_user in subbed_users %}
+            <li><i>{{ subbed_user }}</i></li>
         {% endfor %}
-    </ul>
-<script>
-    var spoilers = document.getElementsByClassName("spoiler");
-    var spoilClick = function(){
-        pchild=this.getElementsByTagName('div');
-        if(pchild[0].style.visibility!='hidden'){
-            pchild[0].style.visibility='hidden';
-            pchild[0].style.height='0';
-        }else{
-            pchild[0].style.visibility=''; pchild[0].style.height=''
-        }
-    }
-    for (var i = 0; i < spoilers.length; i++) {
-    spoilers[i].addEventListener('click', spoilClick, false);
-    }
-</script>
+    </ul><hr>
+    <b>Online people that I follow : </b>
+    <ul class="follows_datas">
+        {% if connected_follows|length == 0 %}
+            <li>There is nobody who's online among the people that you follow.</li>
+        {% endif %}
+        {% for follow in connected_follows %}
+            <li><i>{{ follow }}</i></li>
+        {% endfor %}
+    </ul><hr>
 {% endblock %}
 </body>
 </html>

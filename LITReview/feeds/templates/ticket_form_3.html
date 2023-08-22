@@ -4,9 +4,8 @@
     <title>{% block title %}LITReview Home{% endblock %}</title>
 </head>
 <body>
-<form method="POST" action="{% url 'created_posts' %}" enctype="multipart/form-data">
+<form method="POST" action="{% url 'index' %}" enctype="multipart/form-data">
 {% csrf_token %}
-  <br>
   <div class="form-group">
     <b>Enter a title : </b><br>
     {{ ticket_form.title }}<br>

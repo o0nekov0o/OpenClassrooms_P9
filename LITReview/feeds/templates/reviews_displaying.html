@@ -1,0 +1,27 @@
+{% if post.user == user %}
+<form method="POST" action="{% url 'edit_review' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="review" value="{{ post.id }}" />
+    <input type="hidden" name="ticket" value="{{ post.ticket.id }}" />
+    <button type="submit" class="btn btn-primary">Edit Below Review</button>
+</form>
+<form method="POST" action="{% url 'delete_review' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="review" value="{{ post.id }}" />
+    <button type="submit" class="btn btn-danger">Delete Below Review</button>
+</form><hr>
+{% endif %}
+{{ post.user }} submitted a review at {{ post.time_created }} <br>
+<b>{{ post.headline }} - {{ post.rating }}/5 Rating </b><br>
+{{ post.body }} <br>
+<table class="table table-bordered table-info"><tbody><tr><td>
+{{ post.ticket.user }} created a ticket at {{ post.time_created }} <br>
+{{ post.ticket.title }} <br>
+{{ post.ticket.description }} <br>
+{% if post.ticket.image %}
+    <img src="{{ post.ticket.image.url }}" height="300" width="600">
+{% endif %}
+{% if not post.ticket.image %}
+    <img src="/media/image_not_found.png" height="300" width="600">
+{% endif %}
+</td></tr></tbody></table><hr>
