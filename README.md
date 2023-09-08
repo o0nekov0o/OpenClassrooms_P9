@@ -1,3 +1,5 @@
+# Développez une application Web en utilisant Django - Projet n°9/13 Développeur Python
+Ce dont il est question dans ce projet, c'est de le mener via le scénario suivant : Après un entretien réussi, on décroche le poste de lead développeur Python pour la jeune startup LITReview. Son objectif est de commercialiser un produit permettant à une communauté d'utilisateurs de consulter ou de solliciter une critique de livres à la demande. 
 
 ## Comment utiliser l'application Web développée ?
 
