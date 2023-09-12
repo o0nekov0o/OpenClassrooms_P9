@@ -11,11 +11,25 @@
     <button type="submit" class="btn btn-danger">Delete Below Review</button>
 </form><hr>
 {% endif %}
-{{ post.user }} submitted a review at {{ post.time_created }} <br>
-<b>{{ post.headline }} - {{ post.rating }}/5 Rating </b><br>
+{{ post.user }} submitted a review
+<i style="position:absolute; right:0%">{{ post.time_created }}</i> <br>
+<b>{{ post.headline }} -
+    {% if post.rating == 1 %}
+    ⭐
+    {% elif post.rating == 2 %}
+    ⭐⭐
+    {% elif post.rating == 3 %}
+    ⭐⭐⭐
+    {% elif post.rating == 4 %}
+    ⭐⭐⭐⭐
+    {% elif post.rating == 5 %}
+    ⭐⭐⭐⭐⭐
+    {% endif %}
+</b><br>
 {{ post.body }} <br>
 <table class="table table-bordered table-info"><tbody><tr><td>
-{{ post.ticket.user }} created a ticket at {{ post.time_created }} <br>
+{{ post.ticket.user }} created a ticket
+<i style="position:absolute; right:0%">{{ post.ticket.time_created }}</i> <br>
 {{ post.ticket.title }} <br>
 {{ post.ticket.description }} <br>
 {% if post.ticket.image %}
